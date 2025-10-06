@@ -81,7 +81,7 @@ export async function GET() {
       HARD: { attempted: 0, score: 0 },
     }
 
-    for (const [sessionId, first] of firstBySession.entries()) {
+    firstBySession.forEach((first, sessionId) => {
       const diff = difficultyBySession[sessionId] || 'UNKNOWN'
       const firstScore = first.is_correct ? 1 : 0
       totalScore += firstScore
@@ -90,7 +90,7 @@ export async function GET() {
         byDifficulty[diff].attempted += 1
         byDifficulty[diff].score += firstScore
       }
-    }
+    })
 
     return NextResponse.json({
       attempted: attemptedCount,
