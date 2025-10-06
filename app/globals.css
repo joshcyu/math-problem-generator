@@ -33,6 +33,11 @@
   50%  { transform: translateY(-8px) }
   100% { transform: translateY(0px) }
 }
+/* Prevent off-canvas peeking on mobile */
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
 .float-item {
   position: absolute;
   font-weight: 700;
