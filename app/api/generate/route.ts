@@ -67,12 +67,6 @@ async function genOnceWithModel(model: string, prompt: string) {
   const r2 = await ai.models.generateContent({
     model,
     contents: [{ role: 'user', parts: [{ text: prompt }] }],
-    generationConfig: {
-      temperature: 0.9,
-      topP: 0.95,
-      topK: 40,
-      maxOutputTokens: 512,
-    },
   })
   const text2 = (r2 as any).text ?? (r2 as any).response?.text ?? ''
   return { text: text2, usedJsonMode: false }
