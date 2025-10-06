@@ -66,7 +66,6 @@ export default function NavBar() {
         )}
         onClick={() => setOpen(false)}
       />
-
       <aside
         aria-hidden={!open}
         className={clsx(
@@ -74,7 +73,7 @@ export default function NavBar() {
           'bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/80',
           'shadow-2xl border-l border-gray-200',
           'transition-transform duration-250 ease-out will-change-transform',
-          open ? 'translate-x-0' : 'translate-x-full'
+          open ? 'translate-x-0 opacity-100 pointer-events-auto' : 'translate-x-full opacity-0 pointer-events-none'
         )}
       >
         <div className="p-4 flex items-center justify-between border-b">
