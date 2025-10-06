@@ -16,12 +16,6 @@ async function genHintText(ai: GoogleGenAI, model: string, prompt: string) {
   const res = await ai.models.generateContent({
     model,
     contents: [{ role: 'user', parts: [{ text: prompt }]}],
-    generationConfig: {
-      temperature: 0.9,
-      topP: 0.95,
-      topK: 40,
-      maxOutputTokens: 400,
-    },
   })
   const text = (res as any).text ?? (res as any).response?.text ?? ''
   return String(text).trim()
