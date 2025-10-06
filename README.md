@@ -105,13 +105,13 @@ Create a new API route that handles:
 
 ### 3. Requirements Checklist
 
-- [ ] AI generates appropriate Primary 5 level math problems
-- [ ] Problems and answers are saved to Supabase
-- [ ] User submissions are saved with feedback
-- [ ] AI generates helpful, personalized feedback
-- [ ] UI is clean and mobile-responsive
-- [ ] Error handling for API failures
-- [ ] Loading states during API calls
+- [/] AI generates appropriate Primary 5 level math problems
+- [/] Problems and answers are saved to Supabase
+- [/] User submissions are saved with feedback
+- [/] AI generates helpful, personalized feedback
+- [/] UI is clean and mobile-responsive
+- [/] Error handling for API failures
+- [/] Loading states during API calls
 
 ## Deployment
 
@@ -130,30 +130,56 @@ When submitting your assessment, provide:
 2. **Live Demo URL**: Your Vercel deployment
 3. **Supabase Credentials**: Add these to your README for testing:
    ```
-   SUPABASE_URL: [Your Supabase Project URL]
-   SUPABASE_ANON_KEY: [Your Supabase Anon Key]
+   SUPABASE_URL: https://akfapffrmgnvwlpvulzn.supabase.co
+   SUPABASE_ANON_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFrZmFwZmZybWdudndscHZ1bHpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk2NjY5ODEsImV4cCI6MjA3NTI0Mjk4MX0.BjY1o28tNvNrG9UNsE10ToZUQSsxwCsAT_ZUqbgCFTU
    ```
 
 ## Implementation Notes
 
 *Please fill in this section with any important notes about your implementation, design decisions, challenges faced, or features you're particularly proud of.*
 
-### My Implementation:
+## My Implementation
 
-- 
-- 
-- 
+Schema constraint & workaround (important): Per the brief, I did not modify the database schema (doing so might deduct points). Since there are no dedicated columns for difficulty and problem type, I store them as a prefix in problem_text:
+MEDIUM | MULTIPLICATION | <actual problem text…>
+All UI/analytics (scoreboard, filters, history) parse these from the prefix. The parser is robust to BOM/zero-width characters, whitespace, and mixed case.
+
+AI problem generation: /api/generate calls Gemini (with fallbacks) and persists a session with problem_text (including the prefix) and correct_answer. It de-dupes against the most recent problem to avoid exact repeats.
+
+Answer parsing: Users can submit integers, decimals, simple fractions, or mixed numbers (e.g., 1 1/2). Fractions are normalized to a number for comparison; I keep a small epsilon for floating-point equality.
+
+AI feedback: /api/submit classifies the outcome as correct, near, or wrong, then asks Gemini for concise, kind feedback (with deterministic fallback text if AI fails). Feedback plus correctness are saved to math_problem_submissions.
+
+First-try scoring: /api/score reads only the earliest submission per session to compute “first-try” accuracy, plus a by-difficulty breakdown (again parsed from the prefix).
+
+Hints: /api/hint returns a short, encouraging nudge tailored to the current session.
+
+UI/UX polish:
+
+Generator page has an animated loading overlay (floating math glyphs), card “throw” animations for next/prev, and a progress-bar scoreboard.
+
+Mobile drawer navbar with scroll-lock and backdrop.
+
+Sessions list supports filter by difficulty and inline answering.
+
+History and Session detail pages show submissions + AI feedback.
+
+Performance notes: Scoreboard data is fetched on mount and after a submit, not during hint/generate actions. Problem cards are rendered one at a time with lightweight animations.
+
+Security & environment: Uses Supabase anon keys only (as allowed); no user accounts. Gemini key is server-side. No schema changes.
+
+Assessment visibility: Because there’s no user system, testing rows are visible in the interface (aligned with the provided guidelines).
 
 ## Additional Features (Optional)
 
 If you have time, consider adding:
 
-- [ ] Difficulty levels (Easy/Medium/Hard)
-- [ ] Problem history view
-- [ ] Score tracking
-- [ ] Different problem types (addition, subtraction, multiplication, division)
-- [ ] Hints system
-- [ ] Step-by-step solution explanations
+- [/] Difficulty levels (Easy/Medium/Hard)
+- [/] Problem history view
+- [/] Score tracking
+- [/] Different problem types (addition, subtraction, multiplication, division)
+- [/] Hints system
+- [/] Step-by-step solution explanations
 
 ---
 
